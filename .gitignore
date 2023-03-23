@@ -127,3 +127,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Arquivo com informações do  BD
+/database/database_info.py
