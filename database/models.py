@@ -2,7 +2,8 @@ from sqlalchemy import Column, Integer, String
 
 from connection import Base
 
-class Cidade(Base):
+
+class Cidades(Base):
     __tablename__ = "cidades"
 
     id: int = Column(Integer, primary_key=True, index=True)
