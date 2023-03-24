@@ -4,7 +4,7 @@ from database.models import Cidades
 
 class CidadesService:
     @staticmethod
-    def crete(db: Session, cidade: Cidades) -> Cidades:
+    def create(db: Session, cidade: Cidades) -> Cidades:
         db.add(cidade)
         db.commit()
         return cidade
@@ -21,9 +21,11 @@ class CidadesService:
         if cidade is not None:
             db.delete(cidade)
             db.commit()
+    
     @staticmethod
     def get_all(db: Session) -> list[Cidades]:
         return db.query(Cidades).all()
+    
     @staticmethod
     def get_id(db: Session, id: int) -> Cidades:
         return db.query(Cidades).filter(Cidades.id == id)
