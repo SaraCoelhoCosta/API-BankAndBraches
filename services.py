@@ -4,32 +4,31 @@ from database.models import Cidades
 
 class CidadesService:
     @staticmethod
-    def create(db: Session, cidade: Cidades) -> Cidades:
-        db.add(cidade)
-        db.commit()
-        return cidade
-
-    @staticmethod
-    def update(db: Session,  cidade: Cidades) -> Cidades:
-        db.merge(cidade)
+    def save(db: Session, cidade: Cidades) -> Cidades:
+        print('Entrei')
+        if cidade.id:
+            db.merge(cidade)
+        else:
+            print('Salvou')
+            db.add(cidade)
         db.commit()
         return cidade
 
     @staticmethod
     def delete(db: Session, id: int) -> None:
-        cidade = db.query(Cidades).where(Cidades.id == id)
+        cidade = db.query(Cidades).where(Cidades.id == id).first()
         if cidade is not None:
             db.delete(cidade)
             db.commit()
     
     @staticmethod
-    def get_all(db: Session) -> list[Cidades]:
+    def list(db: Session) -> list[Cidades]:
         return db.query(Cidades).all()
     
     @staticmethod
     def get_id(db: Session, id: int) -> Cidades:
-        return db.query(Cidades).filter(Cidades.id == id)
+        return db.query(Cidades).filter(Cidades.id == id).first()
 
     @staticmethod
     def exists_id(db: Session, id: int) -> bool:
-        return db.query(Cidades).exists(id) is not None
+        return db.query(Cidades).filter(Cidades.id == id).first() is not None

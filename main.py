@@ -1,10 +1,50 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, Depends, HTTPException, status, Response
+from sqlalchemy.orm import Session
+
+from database.models import Cidades
+from database.connection import engine, Base, get_db
+from services import CidadesService
+from schemas import CidadesRequest, CidadesResponse
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
-# router = APIRouter()
+
 
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
 
-# app.include_router(prefix='/read_root', router=router)
+
+@app.post("/cidades", response_model=CidadesResponse, status_code=status.HTTP_201_CREATED)
+def create(request: CidadesRequest, db: Session = Depends(get_db)):
+    cidade = CidadesService.save(db, Cidades(**request.dict()))
+    return CidadesResponse.from_orm(cidade)
+
+
+@app.get("/cidades", response_model=list[CidadesResponse])
+def list(db: Session = Depends(get_db)):
+    cidades = CidadesService.list(db)
+    return [CidadesResponse.from_orm(cidade) for cidade in cidades]
+
+
+@app.get("/cidades/{id}", response_model=CidadesResponse)
+def find_id(id: int, db: Session = Depends(get_db)):
+    cidade = CidadesService.get_id(db, id)
+    print(cidade)
+    if not cidade:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Cidade não encontrada!"
+        )
+    return CidadesResponse.from_orm(cidade)
+
+
+@app.delete("/cidades/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete(id: int, db: Session = Depends(get_db)):
+    if not CidadesService.exists_id(db, id):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Cidade não encontrada!"
+        )
+    CidadesService.delete(db, id)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
