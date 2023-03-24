@@ -5,11 +5,9 @@ from database.models import Cidades
 class CidadesService:
     @staticmethod
     def save(db: Session, cidade: Cidades) -> Cidades:
-        print('Entrei')
         if cidade.id:
             db.merge(cidade)
         else:
-            print('Salvou')
             db.add(cidade)
         db.commit()
         return cidade
