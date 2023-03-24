@@ -9,7 +9,7 @@ class Cidades(Base):
 
     id: int = Column(Integer, primary_key=True, index=True)
     nome: str = Column(String(45), nullable=False)
-    agencias_bank = relationship("Agencias", backref="cidades")
+    agencias_bank = relationship("Agencias", cascade="all, delete")
 
 
 class Agencias(Base):
@@ -18,16 +18,17 @@ class Agencias(Base):
     id: int = Column(Integer, primary_key=True, index=True)
     descricao: str = Column(String(50), nullable=True)
     sede: str = Column(String(45), nullable=False)
-    cidades_id: int = Column(Integer, ForeignKey("cidades.id"), nullable=False)
-    contas_bank = relationship("Contas", backref="agencias")
+    cidades_id: int = Column(Integer, ForeignKey("cidades.id", ondelete="CASCADE"), nullable=False)
+    contas_bank = relationship("Contas", cascade="all, delete")
 
 
 class Contas(Base):
     __tablename__ = "contas"
 
     id: int = Column(Integer, primary_key=True, index=True)
-    agencias_id: int = Column(Integer, ForeignKey("agencias.id"), nullable=False)
+    agencias_id: int = Column(Integer, ForeignKey("agencias.id", ondelete="CASCADE"), nullable=False)
     tipo_conta: str = Column(String(45), nullable=False)
+    clientes_has_contas_bank = relationship("Clientes_has_Contas", cascade="all, delete")
 
 
 class Clientes(Base):
@@ -39,10 +40,11 @@ class Clientes(Base):
     cep: str = Column(String(9), nullable=False)
     telefone: str = Column(String(9), nullable=False)
     descricao: str = Column(String(50), nullable=True)
+    clientes_has_contas_bank2 = relationship("Clientes_has_Contas", cascade="all, delete")
 
 
 class Clientes_has_Contas(Base):
     __tablename__ = "clientes_has_contas"
 
-    clientes_id: int = Column(Integer, ForeignKey("clientes.id"), primary_key=True, index=True)
-    contas_id: int = Column(Integer, ForeignKey("contas.id"), primary_key=True, index=True)
+    clientes_id: int = Column(Integer, ForeignKey("clientes.id", ondelete="CASCADE"), nullable=False, primary_key=True, index=True)
+    contas_id: int = Column(Integer, ForeignKey("contas.id", ondelete="CASCADE"), nullable=False, primary_key=True, index=True)

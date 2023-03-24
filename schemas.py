@@ -7,8 +7,7 @@ class CidadesBase(BaseModel):
 
 
 class CidadesRequest(CidadesBase):
-    id: int
-    nome: str
+    ...
 
 
 class CidadesResponse(CidadesBase):
