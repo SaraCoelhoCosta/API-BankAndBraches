@@ -1,16 +1,7 @@
 from pydantic import BaseModel
 
 
-class CidadesBase(BaseModel):
-    id: int
-    nome: str
-
-
-class CidadesRequest(CidadesBase):
-    ...
-
-
-class CidadesResponse(CidadesBase):
+class CidadesResponse(BaseModel):
     id: int
     nome: str
 

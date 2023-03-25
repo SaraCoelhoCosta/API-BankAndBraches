@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from database.models import Cidades
 from services.services import CidadesService
-from schemas.schemas import CidadesRequest, CidadesResponse
+from schemas.schemas import CidadesResponse
 from fastapi import APIRouter, Depends, HTTPException, status, Response, Request
 import xml.etree.ElementTree as ET
 import xmltodict
@@ -30,7 +30,8 @@ def find_id(id: int, db: Session = Depends(get_db)):
 async def create(request: Request, db: Session = Depends(get_db)):
     content_type = request.headers.get("Content-Type")
     if content_type == "application/json":
-        cidade = CidadesService.save(db, Cidades(**request.dict()))
+        json = await request.json()
+        cidade = CidadesService.save(db, Cidades(**json))
         return CidadesResponse.from_orm(cidade)
     elif content_type == "application/xml":
         xml = await request.body()
@@ -47,7 +48,8 @@ async def update(id: int, request: Request, db: Session = Depends(get_db)):
         )
     content_type = request.headers.get("Content-Type")
     if content_type == "application/json":
-        cidade = CidadesService.save(db, Cidades(**request.dict()))
+        json = await request.json()
+        cidade = CidadesService.save(db, Cidades(**json))
         return CidadesResponse.from_orm(cidade)
     elif content_type == "application/xml":
         xml = await request.body()
