@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from database.models import Cidades
 from services.services import CidadesService
-from schemas.schemas import CidadesResponse
+from schemas.schema_cidades import CidadesResponse
 from fastapi import APIRouter, Depends, HTTPException, status, Response, Request
 import xml.etree.ElementTree as ET
 import xmltodict

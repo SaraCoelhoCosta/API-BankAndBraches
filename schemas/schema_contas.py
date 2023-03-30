@@ -1,9 +1,11 @@
 from pydantic import BaseModel
 
 
-class CidadesResponse(BaseModel):
+class ContasResponse(BaseModel):
     id: int
-    nome: str
+    agencias_id: int
+    tipo_conta: str 
 
     class Config:
         orm_mode = True
+

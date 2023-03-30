@@ -122,7 +122,7 @@ class ClientesService:
     def exists_id(db: Session, id: int) -> bool:
         return db.query(Clientes).filter(Clientes.id == id).first() is not None
     
-class Clientes_has_Contas:
+class Clientes_has_ContasService:
     @staticmethod
     def save(db: Session, cliente_tem_conta: Clientes_has_Contas) -> Clientes_has_Contas:
         if cliente_tem_conta.id:
