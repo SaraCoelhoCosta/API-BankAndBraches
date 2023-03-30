@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from database.models import Agencias
-from services.services import AgenciasService
+from services.agenciasServices import AgenciasService
 from schemas.schema_agencias import AgenciasResponse
 from fastapi import APIRouter, Depends, HTTPException, status, Response, Request
 import xml.etree.ElementTree as ET

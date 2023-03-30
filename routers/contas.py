@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from database.models import Contas
-from services.services import ContasService
+from services.contasServices import ContasService
 from schemas.schema_contas import ContasResponse
 from fastapi import APIRouter, Depends, HTTPException, status, Response, Request
 import xml.etree.ElementTree as ET

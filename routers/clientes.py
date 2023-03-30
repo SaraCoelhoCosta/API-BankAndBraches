@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from database.models import Clientes
-from services.services import ClientesService
+from services.clientesServices import ClientesService
 from schemas.schema_clientes import ClientesResponse
 from fastapi import APIRouter, Depends, HTTPException, status, Response, Request
 import xml.etree.ElementTree as ET
