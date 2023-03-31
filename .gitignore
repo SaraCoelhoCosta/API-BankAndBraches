@@ -132,4 +132,4 @@ dmypy.json
 /database/database_info.py
 
 # Arquivos py
-/.idea
+.idea/
