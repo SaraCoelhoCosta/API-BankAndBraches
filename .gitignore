@@ -130,3 +130,6 @@ dmypy.json
 
 # Arquivo com informações do  BD
 /database/database_info.py
+
+# Arquivos py
+/.idea
