@@ -11,33 +11,78 @@ router = APIRouter()
 
 
 @router.get("", response_model=list[ClientesHasContasResponse])
-def list(db: Session = Depends(get_db)):
+def list(request: Request, db: Session = Depends(get_db)):
     clientes_has_contas = Clientes_has_ContasService.list(db)
-    return [ClientesHasContasResponse.from_orm(cliente_has_conta) for cliente_has_conta in clientes_has_contas]
+    response_obj = [ClientesHasContasResponse.from_orm(cliente_has_conta) for cliente_has_conta in clientes_has_contas]
+
+    root = ET.Element("clientes_has_contas")
+    for cliente_has_conta in response_obj:
+        cliente_has_conta_elem = ET.SubElement(root, "cliente_has_conta")
+        ET.SubElement(cliente_has_conta_elem, "clientes_id").text = str(cliente_has_conta.clientes_id)
+        ET.SubElement(cliente_has_conta_elem, "contas_id").text = str(cliente_has_conta.contas_id)
+        
+        xml_str = ET.tostring(root)
+
+    # Verifica o formato da resposta
+    accept = request.headers.get("Accept")
+    if accept == "application/json":
+        return [ClientesHasContasResponse.from_orm(cliente_has_conta) for cliente_has_conta in clientes_has_contas]
+    elif accept == "application/xml":    
+        return Response(content=xml_str, media_type="application/xml")
 
 
 @router.get("/{id}", response_model=ClientesHasContasResponse)
-def find_id(id: int, db: Session = Depends(get_db)):
+def find_id(request: Request, id: int, db: Session = Depends(get_db)):
     cliente_has_conta = Clientes_has_ContasService.get_id(db, id)
     if not cliente_has_conta:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Cliente e conta não encontrados!"
         )
-    return ClientesHasContasResponse.from_orm(cliente_has_conta)
+
+    root = ET.Element("cliente_has_conta")
+    ET.SubElement(root, "clientes_id").text = str(cliente_has_conta.clientes_id)
+    ET.SubElement(root, "contas_id").text = str(cliente_has_conta.contas_id)
+    
+    xml_str = ET.tostring(root)
+
+    # Verifica o formato da resposta
+    accept = request.headers.get("Accept")
+    if accept == "application/json":
+        return ClientesHasContasResponse.from_orm(cliente_has_conta)
+    elif accept == "application/xml":    
+        return Response(content=xml_str, media_type="application/xml")
 
 
 @router.post("", response_model=ClientesHasContasResponse, status_code=status.HTTP_201_CREATED)
 async def create(request: Request, db: Session = Depends(get_db)):
     content_type = request.headers.get("Content-Type")
+    accept = request.headers.get("Accept")
+    
+    # Verifica o formato da requisição
     if content_type == "application/json":
         json = await request.json()
         cliente_has_conta = Clientes_has_ContasService.save(db, Clientes_has_Contas(**json))
-        return ClientesHasContasResponse.from_orm(cliente_has_conta)
+        # Verifica o formato da resposta
+        if accept == "application/json":
+            return ClientesHasContasResponse.from_orm(cliente_has_conta)
+        elif accept == "application/xml":    
+            return Response(content=xml_str, media_type="application/xml")
     elif content_type == "application/xml":
         xml = await request.body()
         json = xmltodict.parse(xml)
         cliente_has_conta = Clientes_has_ContasService.save(db, Clientes_has_Contas(**json['clientes_has_contas']))
-        return ClientesHasContasResponse.from_orm(cliente_has_conta)
+        
+        root = ET.Element("cliente_has_conta")
+        ET.SubElement(root, "clientes_id").text = str(cliente_has_conta.clientes_id)
+        ET.SubElement(root, "contas_id").text = str(cliente_has_conta.contas_id)
+        
+        xml_str = ET.tostring(root)
+
+        # Verifica o formato da resposta
+        if accept == "application/json":
+            return ClientesHasContasResponse.from_orm(cliente_has_conta)
+        elif accept == "application/xml":    
+            return Response(content=xml_str, media_type="application/xml")
 
 
 @router.put("/{id}", response_model=ClientesHasContasResponse)
@@ -47,16 +92,34 @@ async def update(id: int, request: Request, db: Session = Depends(get_db)):
             status_code=status.HTTP_404_NOT_FOUND, detail="Cliente e conta não encontrados!"
         )
     content_type = request.headers.get("Content-Type")
+    accept = request.headers.get("Accept")
+    
+    # Verifica o formato da requisição
     if content_type == "application/json":
         json = await request.json()
         cliente_has_conta = Clientes_has_ContasService.save(db, Clientes_has_Contas(**json))
-        return ClientesHasContasResponse.from_orm(cliente_has_conta)
+        
+        root = ET.Element("cliente_has_conta")
+        ET.SubElement(root, "clientes_id").text = str(cliente_has_conta.clientes_id)
+        ET.SubElement(root, "contas_id").text = str(cliente_has_conta.contas_id)
+        
+        xml_str = ET.tostring(root)
+
+        # Verifica o formato da resposta
+        if accept == "application/json":
+            return ClientesHasContasResponse.from_orm(cliente_has_conta)
+        elif accept == "application/xml":    
+            return Response(content=xml_str, media_type="application/xml")
     elif content_type == "application/xml":
         xml = await request.body()
         json = xmltodict.parse(xml)
         cliente_has_conta = Clientes_has_ContasService.save(db, Clientes_has_Contas(**json['clientes_has_contas']))
-        return ClientesHasContasResponse.from_orm(cliente_has_conta)
-
+        # Verifica o formato da resposta
+        if accept == "application/json":
+            return ClientesHasContasResponse.from_orm(cliente_has_conta)
+        elif accept == "application/xml":    
+            return Response(content=cliente_has_conta.to_xml(), media_type="application/xml")
+        
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete(id: int, db: Session = Depends(get_db)):

@@ -38,7 +38,7 @@ class Clientes(Base):
     nome: str = Column(String(100), nullable=False)
     endereco: str = Column(String(100), nullable=False)
     cep: str = Column(String(9), nullable=False)
-    telefone: str = Column(String(9), nullable=False)
+    telefone: str = Column(String(15), nullable=False)
     descricao: str = Column(String(50), nullable=True)
     clientes_has_contas_bank2 = relationship("Clientes_has_Contas", cascade="all, delete")
 
