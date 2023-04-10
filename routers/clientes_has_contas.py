@@ -30,7 +30,7 @@ def list(request: Request, db: Session = Depends(get_db)):
     elif accept == "application/xml":    
         return Response(content=xml_str, media_type="application/xml")
 
-
+"""
 @router.get("/{id}", response_model=ClientesHasContasResponse)
 def find_id(request: Request, id: int, db: Session = Depends(get_db)):
     cliente_has_conta = Clientes_has_ContasService.get_id(db, id)
@@ -51,7 +51,7 @@ def find_id(request: Request, id: int, db: Session = Depends(get_db)):
         return ClientesHasContasResponse.from_orm(cliente_has_conta)
     elif accept == "application/xml":    
         return Response(content=xml_str, media_type="application/xml")
-
+"""
 
 @router.post("", response_model=ClientesHasContasResponse, status_code=status.HTTP_201_CREATED)
 async def create(request: Request, db: Session = Depends(get_db)):
@@ -84,7 +84,7 @@ async def create(request: Request, db: Session = Depends(get_db)):
         elif accept == "application/xml":    
             return Response(content=xml_str, media_type="application/xml")
 
-
+"""
 @router.put("/{id}", response_model=ClientesHasContasResponse)
 async def update(id: int, request: Request, db: Session = Depends(get_db)):
     if not Clientes_has_ContasService.exists_id(db, id):
@@ -119,8 +119,8 @@ async def update(id: int, request: Request, db: Session = Depends(get_db)):
             return ClientesHasContasResponse.from_orm(cliente_has_conta)
         elif accept == "application/xml":    
             return Response(content=cliente_has_conta.to_xml(), media_type="application/xml")
-        
-
+"""        
+"""
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete(id: int, db: Session = Depends(get_db)):
     if not Clientes_has_ContasService.exists_id(db, id):
@@ -129,3 +129,4 @@ def delete(id: int, db: Session = Depends(get_db)):
         )
     Clientes_has_ContasService.delete(db, id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+"""

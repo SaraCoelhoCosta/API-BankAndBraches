@@ -5,7 +5,7 @@ from database.models import Clientes_has_Contas
 class Clientes_has_ContasService:
     @staticmethod
     def save(db: Session, cliente_tem_conta: Clientes_has_Contas) -> Clientes_has_Contas:
-        if cliente_tem_conta.id:
+        if cliente_tem_conta.clientes_id:
             db.merge(cliente_tem_conta)
         else:
             db.add(cliente_tem_conta)
