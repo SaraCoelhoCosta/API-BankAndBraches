@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from database.connection import engine, Base
 from routers.cidades import router as cidades_router
 from routers.agencias import router as agencias_router
@@ -10,10 +11,18 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+origins = [
+    "http://127.0.0.1:8000/",
+    "http://localhost:8000/",
+]
 
-@app.get("/")
-def root():
-    return {"Hello": "World"}
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(cidades_router, prefix="/cidades")
 app.include_router(agencias_router, prefix="/agencias")

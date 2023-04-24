@@ -19,8 +19,9 @@ class ClientesService:
             db.commit()
     
     @staticmethod
-    def list(db: Session) -> list[Clientes]:
-        return db.query(Clientes).all()
+    def list(db: Session):
+        cidades = db.query(Clientes).all()
+        return cidades
     
     @staticmethod
     def get_id(db: Session, id: int) -> Clientes:
