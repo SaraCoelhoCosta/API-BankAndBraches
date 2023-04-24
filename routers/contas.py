@@ -112,7 +112,7 @@ async def update(id: int, request: Request, db: Session = Depends(get_db)):
         if accept == "application/json":
             return ContasResponse.from_orm(conta)
         elif accept == "application/xml":    
-            return Response(content=xml_str, media_type="application/xml")
+            return Response(content=xml_str.decode("utf-8"), media_type="application/xml")
     elif content_type == "application/xml":
         xml = await request.body()
         json = xmltodict.parse(xml)
