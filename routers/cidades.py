@@ -49,10 +49,9 @@ def find_id(request: Request, id: int, db: Session = Depends(get_db)):
         response_obj = CidadesResponse.from_orm(cidade)
 
         root = ET.Element("cidades")
-        for cidade in response_obj:
-            cidade_elem = ET.SubElement(root, "cidade")
-            ET.SubElement(cidade_elem, "id").text = str(cidade.id)
-            ET.SubElement(cidade_elem, "nome").text = cidade.nome
+        cidade_elem = ET.SubElement(root, "cidade")
+        ET.SubElement(cidade_elem, "id").text = str(cidade.id)
+        ET.SubElement(cidade_elem, "nome").text = cidade.nome
         
         xml_str = ET.tostring(root)
         return Response(content=xml_str, media_type="application/xml")
