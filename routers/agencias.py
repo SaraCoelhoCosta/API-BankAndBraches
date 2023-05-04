@@ -72,7 +72,8 @@ async def create(request: Request, db: Session = Depends(get_db)):
 
         # Verifica o formato da resposta
         if accept == "application/json" or accept == "text/plain" or accept == "*/*" or accept == "application/json, text/plain, */*":
-            return AgenciasResponse.from_orm(agencia)
+            return AgenciasResponse.from_orm(agencia).json()
+        
         elif accept == "application/xml" or accept == "text/plain" or accept == "*/*" or accept == "application/json, text/plain, */*":    
             xml = await request.body()
             json = xmltodict.parse(xml)
