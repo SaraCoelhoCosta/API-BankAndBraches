@@ -10,25 +10,29 @@ from database.connection import get_db
 router = APIRouter()
 
 
-@router.get("", response_model=list[ClientesHasContasResponse])
+@router.get("")
 def list(request: Request, db: Session = Depends(get_db)):
+    
     clientes_has_contas = Clientes_has_ContasService.list(db)
-    response_obj = [ClientesHasContasResponse.from_orm(cliente_has_conta) for cliente_has_conta in clientes_has_contas]
-
-    root = ET.Element("clientes_has_contas")
-    for cliente_has_conta in response_obj:
-        cliente_has_conta_elem = ET.SubElement(root, "cliente_has_conta")
-        ET.SubElement(cliente_has_conta_elem, "clientes_id").text = str(cliente_has_conta.clientes_id)
-        ET.SubElement(cliente_has_conta_elem, "contas_id").text = str(cliente_has_conta.contas_id)
-        
-        xml_str = ET.tostring(root)
 
     # Verifica o formato da resposta
     accept = request.headers.get("Accept")
-    if accept == "application/json":
+    if accept == "application/json" or accept == "text/plain" or accept == "*/*" or accept == "application/json, text/plain, */*":
         return [ClientesHasContasResponse.from_orm(cliente_has_conta) for cliente_has_conta in clientes_has_contas]
-    elif accept == "application/xml":    
+    
+    elif accept == "application/xml" or accept == "text/plain" or accept == "*/*" or accept == "application/xml, text/plain, */*":    
+        response_obj = [ClientesHasContasResponse.from_orm(cliente_has_conta) for cliente_has_conta in clientes_has_contas]
+
+        root = ET.Element("clientes_has_contas")
+        for cliente_has_conta in response_obj:
+            cliente_has_conta_elem = ET.SubElement(root, "cliente_has_conta")
+            ET.SubElement(cliente_has_conta_elem, "clientes_id").text = str(cliente_has_conta.clientes_id)
+            ET.SubElement(cliente_has_conta_elem, "contas_id").text = str(cliente_has_conta.contas_id)
+            
+        xml_str = ET.tostring(root)
+
         return Response(content=xml_str, media_type="application/xml")
+
 
 """
 @router.get("/{id}", response_model=ClientesHasContasResponse)
@@ -51,9 +55,11 @@ def find_id(request: Request, id: int, db: Session = Depends(get_db)):
         return ClientesHasContasResponse.from_orm(cliente_has_conta)
     elif accept == "application/xml":    
         return Response(content=xml_str, media_type="application/xml")
+
 """
 
-@router.post("", response_model=ClientesHasContasResponse, status_code=status.HTTP_201_CREATED)
+
+@router.post("")
 async def create(request: Request, db: Session = Depends(get_db)):
     content_type = request.headers.get("Content-Type")
     accept = request.headers.get("Accept")
@@ -62,26 +68,43 @@ async def create(request: Request, db: Session = Depends(get_db)):
     if content_type == "application/json":
         json = await request.json()
         cliente_has_conta = Clientes_has_ContasService.save(db, Clientes_has_Contas(**json))
+        
         # Verifica o formato da resposta
-        if accept == "application/json":
-            return ClientesHasContasResponse.from_orm(cliente_has_conta)
-        elif accept == "application/xml":    
+        if accept == "application/json" or accept == "text/plain" or accept == "*/*" or accept == "application/json, text/plain, */*":
+            return ClientesHasContasResponse.from_orm(cliente_has_conta).json()
+        
+        elif accept == "application/xml" or accept == "text/plain" or accept == "*/*" or accept == "application/xml, text/plain, */*":
+            xml = await request.body()
+            json = xmltodict.parse(xml)
+            cliente_has_conta = Clientes_has_ContasService.save(db, Clientes_has_Contas(**json['clientes_has_contas']))
+
+            root = ET.Element("cliente_has_conta")
+            ET.SubElement(root, "clientes_id").text = str(cliente_has_conta.clientes_id)
+            ET.SubElement(root, "contas_id").text = str(cliente_has_conta.contas_id)
+            
+            xml_str = ET.tostring(root)    
+
             return Response(content=xml_str, media_type="application/xml")
+    
+    # Verifica o formato da requisição
     elif content_type == "application/xml":
-        xml = await request.body()
-        json = xmltodict.parse(xml)
-        cliente_has_conta = Clientes_has_ContasService.save(db, Clientes_has_Contas(**json['clientes_has_contas']))
-        
-        root = ET.Element("cliente_has_conta")
-        ET.SubElement(root, "clientes_id").text = str(cliente_has_conta.clientes_id)
-        ET.SubElement(root, "contas_id").text = str(cliente_has_conta.contas_id)
-        
-        xml_str = ET.tostring(root)
+        print('Testando...')
 
         # Verifica o formato da resposta
-        if accept == "application/json":
+        if accept == "application/json" or accept == "text/plain" or accept == "*/*" or accept == "application/json, text/plain, */*":
             return ClientesHasContasResponse.from_orm(cliente_has_conta)
-        elif accept == "application/xml":    
+        
+        elif accept == "application/xml" or accept == "text/plain" or accept == "*/*" or accept == "application/xml, text/plain, */*":  
+            xml = await request.body()
+            json = xmltodict.parse(xml)
+            cliente_has_conta = Clientes_has_ContasService.save(db, Clientes_has_Contas(**json['clientes_has_contas']))
+            
+            root = ET.Element("cliente_has_conta")
+            ET.SubElement(root, "clientes_id").text = str(cliente_has_conta.clientes_id)
+            ET.SubElement(root, "contas_id").text = str(cliente_has_conta.contas_id)
+            
+            xml_str = ET.tostring(root) 
+
             return Response(content=xml_str, media_type="application/xml")
 
 """
