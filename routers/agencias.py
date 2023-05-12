@@ -44,7 +44,7 @@ def find_id(request: Request, id: int, db: Session = Depends(get_db)):
     
     # Verifica o formato da resposta
     accept = request.headers.get("Accept")
-    if accept == "application/json" or accept == "text/plain" or accept == "*/*" or accept == "application/xml, text/plain, */*": 
+    if accept == "application/json" or accept == "text/plain" or accept == "*/*" or accept == "application/json, text/plain, */*": 
         return AgenciasResponse.from_orm(agencia)
     
     elif accept == "application/xml" or accept == "text/plain" or accept == "*/*" or accept == "application/xml, text/plain, */*":   
@@ -74,7 +74,7 @@ async def create(request: Request, db: Session = Depends(get_db)):
         if accept == "application/json" or accept == "text/plain" or accept == "*/*" or accept == "application/json, text/plain, */*":
             return AgenciasResponse.from_orm(agencia).json()
         
-        elif accept == "application/xml" or accept == "text/plain" or accept == "*/*" or accept == "application/json, text/plain, */*":    
+        elif accept == "application/xml" or accept == "text/plain" or accept == "*/*" or accept == "application/xml, text/plain, */*":    
             xml = await request.body()
             json = xmltodict.parse(xml)
             agencia = AgenciasService.save(db, Agencias(**json['agencias']))
@@ -150,7 +150,7 @@ async def update(id: int, request: Request, db: Session = Depends(get_db)):
         # Verifica o formato da resposta
         if accept == "application/json" or accept == "text/plain" or accept == "*/*" or accept == "application/json, text/plain, */*":
             return AgenciasResponse.from_orm(agencia)
-        elif accept == "application/xml" or accept == "text/plain" or accept == "*/*" or accept == "application/json, text/plain, */*":    
+        elif accept == "application/xml" or accept == "text/plain" or accept == "*/*" or accept == "application/xml, text/plain, */*":    
             return Response(content=agencia.to_xml(), media_type="application/xml")
 
 
