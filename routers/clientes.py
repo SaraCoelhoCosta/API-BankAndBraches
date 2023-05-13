@@ -34,7 +34,6 @@ def list(request: Request, db: Session = Depends(get_db)):
             ET.SubElement(cliente_elem, "descricao").text = cliente.descricao
             
         xml_str = ET.tostring(root)
-
         return Response(content=xml_str, media_type="application/xml")
 
 
@@ -99,7 +98,6 @@ async def create(request: Request, db: Session = Depends(get_db)):
     
     # Verifica formato da requisição
     elif content_type == "application/xml":
-        print('Testando...')
 
         # Verifica o formato da resposta
         if accept == "application/json" or accept == "text/plain" or accept == "*/*" or accept == "application/json, text/plain, */*":
@@ -131,8 +129,6 @@ async def update(id: int, request: Request, db: Session = Depends(get_db)):
         )
     content_type = request.headers.get("Content-Type")
     accept = request.headers.get("Accept")
-    print(content_type)
-    print(accept)
     
     # Verifica o formato da requisição
     if content_type == "application/json":

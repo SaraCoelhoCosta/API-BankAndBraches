@@ -84,7 +84,6 @@ async def create(request: Request, db: Session = Depends(get_db)):
     
     # Verifica formato da requisição
     elif content_type == "application/xml":
-        print('Testando...')
         # Verifica o formato da resposta
         if accept == "application/json" or accept == "text/plain" or accept == "*/*" or accept == "application/json, text/plain, */*":
             return CidadesResponse.from_orm(cidade)
@@ -110,8 +109,6 @@ async def update(id: int, request: Request, db: Session = Depends(get_db)):
         )
     content_type = request.headers.get("Content-Type")
     accept = request.headers.get("Accept")
-    print(content_type)
-    print(accept)
     
     # Verifica o formato da requisição
     if content_type == "application/json":
