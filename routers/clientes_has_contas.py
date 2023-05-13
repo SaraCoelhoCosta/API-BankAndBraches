@@ -34,7 +34,6 @@ def list(request: Request, db: Session = Depends(get_db)):
         return Response(content=xml_str, media_type="application/xml")
 
 
-"""
 @router.get("/{id}", response_model=ClientesHasContasResponse)
 def find_id(request: Request, id: int, db: Session = Depends(get_db)):
     cliente_has_conta = Clientes_has_ContasService.get_id(db, id)
@@ -43,20 +42,20 @@ def find_id(request: Request, id: int, db: Session = Depends(get_db)):
             status_code=status.HTTP_404_NOT_FOUND, detail="Cliente e conta não encontrados!"
         )
 
-    root = ET.Element("cliente_has_conta")
-    ET.SubElement(root, "clientes_id").text = str(cliente_has_conta.clientes_id)
-    ET.SubElement(root, "contas_id").text = str(cliente_has_conta.contas_id)
-    
-    xml_str = ET.tostring(root)
-
     # Verifica o formato da resposta
     accept = request.headers.get("Accept")
     if accept == "application/json":
         return ClientesHasContasResponse.from_orm(cliente_has_conta)
+    
     elif accept == "application/xml":    
+        root = ET.Element("cliente_has_conta")
+        ET.SubElement(root, "clientes_id").text = str(cliente_has_conta.clientes_id)
+        ET.SubElement(root, "contas_id").text = str(cliente_has_conta.contas_id)
+    
+        xml_str = ET.tostring(root)
+        
         return Response(content=xml_str, media_type="application/xml")
 
-"""
 
 
 @router.post("")
@@ -64,6 +63,7 @@ async def create(request: Request, db: Session = Depends(get_db)):
     content_type = request.headers.get("Content-Type")
     accept = request.headers.get("Accept")
     
+    print(content_type, accept)
     # Verifica o formato da requisição
     if content_type == "application/json":
         json = await request.json()

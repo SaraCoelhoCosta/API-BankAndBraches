@@ -25,7 +25,7 @@ class Clientes_has_ContasService:
     
     @staticmethod
     def get_id(db: Session, id: int) -> Clientes_has_Contas:
-        return db.query(Clientes_has_Contas).filter(Clientes_has_Contas.id == id).first()
+        return db.query(Clientes_has_Contas).filter(Clientes_has_Contas.clientes_id == id).first()
 
     @staticmethod
     def exists_id(db: Session, id: int) -> bool:
