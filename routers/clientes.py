@@ -48,9 +48,10 @@ def find_id(request: Request, id: int, db: Session = Depends(get_db)):
 
     # Verifica o formato da resposta
     accept = request.headers.get("Accept")
-    if accept == "application/json":
+    if accept == "application/json" or accept == "text/plain" or accept == "*/*" or accept == "application/json, text/plain, */*":
         return ClientesResponse.from_orm(cliente)
-    elif accept == "application/xml":  
+    
+    elif accept == "application/xml"  or accept == "text/plain" or accept == "*/*" or accept == "application/xml, text/plain, */*":    
         
         root = ET.Element("cliente")
         ET.SubElement(root, "id").text = str(cliente.id)

@@ -4,9 +4,11 @@ from database.models import Clientes_has_Contas
 
 class Clientes_has_ContasService:
     @staticmethod
-    def save(db: Session, cliente_tem_conta: Clientes_has_Contas) -> Clientes_has_Contas:
-        if cliente_tem_conta.clientes_id:
-            db.merge(cliente_tem_conta)
+    def save(db: Session, cliente_tem_conta: Clientes_has_Contas, id: int) -> Clientes_has_Contas:
+        if id:
+            result = db.query(Clientes_has_Contas).where(Clientes_has_Contas.clientes_id == id).first()
+            result.contas_id = cliente_tem_conta.contas_id
+            # db.merge(cliente_tem_conta)
         else:
             db.add(cliente_tem_conta)
         db.commit()
@@ -14,7 +16,7 @@ class Clientes_has_ContasService:
 
     @staticmethod
     def delete(db: Session, id: int) -> None:
-        cliente_tem_conta = db.query(Clientes_has_Contas).where(Clientes_has_Contas.id == id).first()
+        cliente_tem_conta = db.query(Clientes_has_Contas).where(Clientes_has_Contas.clientes_id == id).first()
         if cliente_tem_conta is not None:
             db.delete(cliente_tem_conta)
             db.commit()
@@ -29,4 +31,4 @@ class Clientes_has_ContasService:
 
     @staticmethod
     def exists_id(db: Session, id: int) -> bool:
-        return db.query(Clientes_has_Contas).filter(Clientes_has_Contas.id == id).first() is not None
+        return db.query(Clientes_has_Contas).filter(Clientes_has_Contas.clientes_id == id).first() is not None
